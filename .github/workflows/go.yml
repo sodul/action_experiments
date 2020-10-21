@@ -34,7 +34,7 @@ jobs:
       run: ./action_experiments
 
     - name: Publish artifact
-      uses: actions/upload-artifacts@v2
+      uses: actions/upload-artifact@v2
       with:
         name: action_experiments-linux
         path: action_experiments
