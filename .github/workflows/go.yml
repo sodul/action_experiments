@@ -7,17 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
+  build:
+    strategy:
+      matrix:
+        go-version: [1.14.x, 1.15.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
 
-  build-linux:
-    name: Build Linux
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
     steps:
 
-    - name: Set up Go 1.15
+    - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.15
-      id: go
+        go-version: ${{ matrix.go-version }}
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -36,6 +38,5 @@ jobs:
     - name: Publish artifact
       uses: actions/upload-artifact@v2
       with:
-        name: action_experiments-linux
+        name: action_experiments
         path: action_experiments
-
