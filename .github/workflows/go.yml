@@ -40,16 +40,16 @@ jobs:
       id: vars
       run: |
         echo ::set-output name=archive_ext::\
-        $(echo '{ "Linux": "-linux.tgz", "macOS": "-macos.tgz", "Windows": "-win.zip" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
+        $(echo '{ "Linux": "-linux.tgz", "macOS": "-macos.tgz", "Windows/0": "-win.zip" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
         echo ::set-output name=file_ext::\
-        $(echo '{ "Linux": "", "macOS": "", "Windows": ".exe" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
+        $(echo '{ "Linux": "", "macOS": "", "Windows/0": ".exe" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
 
     - name: compress
       run: |
         echo ${{ runner.os }}
         if [[ "${{ runner.os }}" == "Linux" || "${{ runner.os }}" == "macOS" ]]; then
             tar -czvf action_experiments${{ steps.vars.outputs.archive_ext }} action_experiments
-        elif [[ "${{ runner.os }}" == "Windows" ]]; then
+        elif [[ "${{ runner.os }}" == "Windows/0" ]]; then
             zip -qq -r action_experiments${{ steps.vars.outputs.archive_ext }} action_experiments.exe
         else
             echo 'unsupported runner'
