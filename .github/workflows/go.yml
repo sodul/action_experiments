@@ -33,15 +33,15 @@ jobs:
 
     - name: Test
       # run: echo go test -v .
-      run: ls && ./action_experiments
+      run: echo $RUNNER_OS && ls && ./action_experiments
 
-    - name: Set filenames
+    - name: Set vars
       id: vars
       run: |
         echo ::set-output name=archive_ext::\
-        $(echo '{ "ubuntu-latest": ".tgz", "macos-latest": ".tgz", "windows-latest": ".zip" }' | jq -r 'to_entries[] | select(.key=="${{ matrix.platform }}") | .value')
+        $(echo '{ "Linux": ".tgz", "macOS": ".tgz", "Windows": ".zip" }' | jq -r 'to_entries[] | select(.key=="'$RUNNER_OS'") | .value')
         echo ::set-output name=file_ext::\
-        $(echo '{ "ubuntu-latest": "", "macos-latest": "", "windows-latest": ".exe" }' | jq -r 'to_entries[] | select(.key=="${{ matrix.platform }}") | .value')
+        $(echo '{ "Linux": "", "macOS": "", "Windows": ".exe" }' | jq -r 'to_entries[] | select(.key=="'$RUNNER_OS'") | .value')
 
     - name: compress
       run: |
