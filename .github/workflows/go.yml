@@ -16,17 +16,17 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Check Windows
-        if: ${{ matrix.platform == windows-latest }}
+        if: ${{ matrix.platform == "windows-latest" }}
         id: vars
         run: echo ::set-output name=archive_name::"action_experiments-windows.zip"
 
       - name: Check Linux
-        if: ${{ matrix.platform == ubuntu-latest }}
+        if: ${{ matrix.platform == "ubuntu-latest" }}
         id: vars
         run: echo ::set-output name=archive_name::"action_experiments-linux.tgz"
 
       - name: Check macOS
-        if: ${{ matrix.platform == macos-latest }}
+        if: ${{ matrix.platform == "macos-latest" }}
         id: vars
         run: echo ::set-output name=archive_name::"action_experiments-macos.tgz"
 
