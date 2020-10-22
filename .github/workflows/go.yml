@@ -54,8 +54,8 @@ jobs:
         # note that $RUNNER_OS is empty on the windows runner somehow.
         run: echo ${{ runner.os }} && ls && ./action_experiments
 
-      - name: package
-        id: package
+      - name: Package tgz
+        if: matrix.platform != 'windows-latest'
         run: |
           archive_name=${{ steps.vars.outputs.archive_name }}
           runner_os=${{ runner.os }}
@@ -68,6 +68,12 @@ jobs:
               echo 'unsupported runner'
               exit 1
           fi
+
+      - name: Package zip
+        if: matrix.platform == 'windows-latest'
+        run: |
+          archive_name=${{ steps.vars.outputs.archive_name }}
+          zip -qq -r "$archive_name" action_experiments.exe
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
