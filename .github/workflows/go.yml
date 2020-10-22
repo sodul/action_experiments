@@ -60,7 +60,7 @@ jobs:
 
       - name: Package zip
         if: matrix.platform == 'windows-latest'
-        run: Compress-Archive -Path action_experiments.exe -DestinationPath "${{ steps.vars.outputs.archive_name }}"
+        run: Compress-Archive -Path action_experiments.exe -DestinationPath "action_experiments-windows.zip"
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
