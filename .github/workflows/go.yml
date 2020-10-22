@@ -40,9 +40,9 @@ jobs:
       id: vars
       run: |
         echo ::set-output name=archive_ext::\
-        $(echo '{ "Linux": "-linux.tgz", "macOS": "-macos.tgz", "": "-win.zip" }' | jq -r 'to_entries[] | select(.key=="'$RUNNER_OS'") | .value')
+        $(echo '{ ".Linux": "-linux.tgz", ".macOS": "-macos.tgz", ".": "-win.zip" }' | jq -r 'to_entries[] | select(.key==".'$RUNNER_OS'") | .value')
         echo ::set-output name=file_ext::\
-        $(echo '{ "Linux": "", "macOS": "", "": ".exe" }' | jq -r 'to_entries[] | select(.key=="'$RUNNER_OS'") | .value')
+        $(echo '{ ".Linux": "", ".macOS": "", ".": ".exe" }' | jq -r 'to_entries[] | select(.key==".'$RUNNER_OS'") | .value')
 
     - name: compress
       run: |
