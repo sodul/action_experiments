@@ -15,20 +15,25 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - name: Check Windows
+      - name: Vars Windows
         if: matrix.platform == "windows-latest"
-        id: vars
+        id: vars-win
         run: echo ::set-output name=archive_name::"action_experiments-windows.zip"
 
-      - name: Check Linux
+      - name: Vars Linux
         if: matrix.platform == "ubuntu-latest"
-        id: vars
+        id: vars-linux
         run: echo ::set-output name=archive_name::"action_experiments-linux.tgz"
 
-      - name: Check macOS
+      - name: Vars macOS
+        if: matrix.platform == "macos-latest"
+        id: vars-macos
+        run: echo ::set-output name=archive_name::"action_experiments-macos.tgz"
+
+      - name: Vars
         if: matrix.platform == "macos-latest"
         id: vars
-        run: echo ::set-output name=archive_name::"action_experiments-macos.tgz"
+        run: echo ::set-output name=archive_name::${{ steps.vars-win.outputs.archive_name }}${{ steps.vars-linux.outputs.archive_name }}${{ steps.vars-macos.outputs.archive_name }}
 
       - name: Set up Go
         uses: actions/setup-go@v2
