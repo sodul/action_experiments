@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        go-version: [1.14.x, 1.15.x]
+        go-version: [1.15.x]
         platform: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{ matrix.platform }}
@@ -26,17 +26,37 @@ jobs:
 
     - name: Get dependencies
       run: |
-        go  mod download
+        go mod download
 
     - name: Build
       run: go build -v .
 
     - name: Test
       # run: echo go test -v .
-      run: ./action_experiments
+      run: ls && ./action_experiments
+
+    - name: Set filenames
+      id: vars
+      run: |
+        echo ::set-output name=archive_ext::\
+        $(echo '{ "ubuntu-latest": ".tgz", "macos-latest": ".tgz", "windows-latest": ".zip" }' | jq -r 'to_entries[] | select(.key=="${{ matrix.platform }}") | .value')
+        echo ::set-output name=file_ext::\
+        $(echo '{ "ubuntu-latest": "", "macos-latest": "", "windows-latest": ".exe" }' | jq -r 'to_entries[] | select(.key=="${{ matrix.platform }}") | .value')
+
+    - name: compress
+      run: |
+        echo $RUNNER_OS
+        if [[ "$RUNNER_OS" == "Linux" || "$RUNNER_OS" == "macOS" ]]; then
+            tar -czvf action_experiments-$RUNNER_OS.tgz action_experiments
+        elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            zip -qq -r action_experiments.zip action_experiments.exe
+        else
+            echo 'unsupported runner'
+            exit 1
+        fi
 
     - name: Publish artifact
       uses: actions/upload-artifact@v2
       with:
-        name: action_experiments
-        path: action_experiments
+        name: action_experiments${{ steps.vars.outputs.archive_ext }}
+        path: action_experiments${{ steps.vars.outputs.archive_ext }}
