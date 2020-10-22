@@ -15,50 +15,58 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
+      - name: Check Windows
+        if: ${{ os.runner == Windows }}
+        id: vars
+        run: echo ::set-output name=archive_name::"action_experiments-windows.zip"
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
+      - name: Check Linux
+        if: ${{ os.runner == Linux }}
+        id: vars
+        run: echo ::set-output name=archive_name::"action_experiments-linux.tgz"
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      - name: Check macOS
+        if: ${{ os.runner == macOS }}
+        id: vars
+        run: echo ::set-output name=archive_name::"action_experiments-macos.tgz"
 
-    - name: Get dependencies
-      run: |
-        go mod download
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
 
-    - name: Build
-      run: go build -v .
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-    - name: Test
-      # run: echo go test -v .
-      # note that $RUNNER_OS is empty on the windows runner somehow.
-      run: echo ${{ runner.os }} && ls && ./action_experiments
+      - name: Get dependencies
+        run: |
+          go mod download
 
-    - name: package
-      id: package
-      run: |
-        echo ${{ runner.os }}
-        os_type=${{ runner.os }}
-        echo os_type: $os_type
-        os_type=$(echo $os_type | tr '[:upper:]' '[:lower:]')
-        echo os_type: $os_type
-        if [[ "${os_type}" == "linux" || "${os_type}" == "macos" ]]; then
-            archive_name=action_experiments-${os_type}.tgz
-            tar -czvf $archive_name action_experiments
-        elif [[ "${os_type}" == "windows" ]]; then
-            archive_name=action_experiments-${os_type}.zip
-            zip -qq -r "$archive_name" action_experiments.exe
-        else
-            echo 'unsupported runner'
-            exit 1
-        fi
-        echo archive_name: $archive_name
-        echo ::set-output name=archive_name::"$archive_name"
+      - name: Build
+        run: go build -v .
 
-    - name: Publish artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ steps.package.outputs.archive_name }}
-        path: ${{ steps.package.outputs.archive_name }}
+      - name: Test
+        # run: echo go test -v .
+        # note that $RUNNER_OS is empty on the windows runner somehow.
+        run: echo ${{ runner.os }} && ls && ./action_experiments
+
+      - name: package
+        id: package
+        run: |
+          archive_name=${{ steps.vars.outputs.archive_name }}
+          runner_os=${{ runner.os }}
+          echo os_type: $os_type
+          if [[ "${runner_os}" == "Linux" || "${runner_os}" == "macOS" ]]; then
+              tar -czvf $archive_name action_experiments
+          elif [[ "${runner_os}" == "Windows" ]]; then
+              zip -qq -r "$archive_name" action_experiments.exe
+          else
+              echo 'unsupported runner'
+              exit 1
+          fi
+
+      - name: Publish artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.vars.outputs.archive_name }}
+          path: ${{ steps.vars.outputs.archive_name }}
