@@ -71,9 +71,9 @@ jobs:
 
       - name: Package zip
         if: matrix.platform == 'windows-latest'
-        run: |
-          archive_name=${{ steps.vars.outputs.archive_name }}
-          zip -qq -r "$archive_name" action_experiments.exe
+        - uses: montudor/action-zip@v0.1.0
+          with:
+            args: zip -qq -r ${{ steps.vars.outputs.archive_name }} action_experiments.exe
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
