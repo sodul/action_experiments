@@ -16,22 +16,21 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Vars Windows
-        if: matrix.platform == "windows-latest"
+        if: matrix.platform == 'windows-latest'
         id: vars-win
         run: echo ::set-output name=archive_name::"action_experiments-windows.zip"
 
       - name: Vars Linux
-        if: matrix.platform == "ubuntu-latest"
+        if: matrix.platform == 'ubuntu-latest'
         id: vars-linux
         run: echo ::set-output name=archive_name::"action_experiments-linux.tgz"
 
       - name: Vars macOS
-        if: matrix.platform == "macos-latest"
+        if: matrix.platform == 'macos-latest'
         id: vars-macos
         run: echo ::set-output name=archive_name::"action_experiments-macos.tgz"
 
       - name: Vars
-        if: matrix.platform == "macos-latest"
         id: vars
         run: echo ::set-output name=archive_name::${{ steps.vars-win.outputs.archive_name }}${{ steps.vars-linux.outputs.archive_name }}${{ steps.vars-macos.outputs.archive_name }}
 
