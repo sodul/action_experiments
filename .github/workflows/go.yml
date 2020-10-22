@@ -34,30 +34,31 @@ jobs:
     - name: Test
       # run: echo go test -v .
       # note that $RUNNER_OS is empty on the windows runner somehow.
-      run: echo ${{ runner.os }} && ls && ./action_experiments
-
-    - name: Set vars
-      id: vars
-      run: |
-        echo ::set-output name=archive_ext::\
-        $(echo '{ "Linux": "-linux.tgz", "macOS": "-macos.tgz", "Windows": "-win.zip", "Windows/0": "-win.zip" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
-        echo ::set-output name=file_ext::\
-        $(echo '{ "Linux": "", "macOS": "", "Windows": ".exe", "Windows/0": ".exe" }' | jq -r 'to_entries[] | select(.key=="${{ runner.os }}") | .value')
+      run: echo ${{ runner.os }} && ls && ./action_experiments && ps aux
 
     - name: compress
+      id: package
       run: |
+        ps aux
         echo ${{ runner.os }}
+        os_type=${{ runner.os }}
+        echo os_type: $os_type
+        os_type="${os_type,,}"
+        echo os_type: $os_type
         if [[ "${{ runner.os }}" == "Linux" || "${{ runner.os }}" == "macOS" ]]; then
-            tar -czvf action_experiments${{ steps.vars.outputs.archive_ext }} action_experiments
+            archive_name=action_experiments-${os_type}.tgz
+            tar -czvf $archive_name action_experiments
         elif [[ "${{ runner.os }}" == "Windows/0" ]]; then
-            zip -qq -r action_experiments${{ steps.vars.outputs.archive_ext }} action_experiments.exe
+            archive_name=action_experiments-${os_type}.zip
+            zip -qq -r "$archive_name" action_experiments.exe
         else
             echo 'unsupported runner'
             exit 1
         fi
+        echo ::set-output name=archive_name::"$archive_name"
 
     - name: Publish artifact
       uses: actions/upload-artifact@v2
       with:
-        name: action_experiments${{ steps.vars.outputs.archive_ext }}
-        path: action_experiments${{ steps.vars.outputs.archive_ext }}
+        name: action_experiments${{ steps.pacakge.outputs.archive_name }}
+        path: action_experiments${{ steps.vars.outputs.archive_name }}
