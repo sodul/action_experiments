@@ -60,9 +60,7 @@ jobs:
 
       - name: Package zip
         if: matrix.platform == 'windows-latest'
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: Compress-Archive -Path action_experiments.exe -DestinationPath  ${{ steps.vars.outputs.archive_name }} 
+        run: Compress-Archive -Path action_experiments.exe -DestinationPath  ${{ steps.vars.outputs.archive_name }} 
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
