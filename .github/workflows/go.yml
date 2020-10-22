@@ -34,7 +34,7 @@ jobs:
     - name: Test
       # run: echo go test -v .
       # note that $RUNNER_OS is empty on the windows runner somehow.
-      run: echo ${{ runner.os }} && ls && ./action_experiments && ps aux
+      run: echo ${{ runner.os }} && ls && ./action_experiments
 
     - name: package
       id: package
@@ -54,10 +54,11 @@ jobs:
             echo 'unsupported runner'
             exit 1
         fi
+        echo archive_name: $archive_name
         echo ::set-output name=archive_name::"$archive_name"
 
     - name: Publish artifact
       uses: actions/upload-artifact@v2
       with:
-        name: action_experiments${{ steps.pacakge.outputs.archive_name }}
-        path: action_experiments${{ steps.vars.outputs.archive_name }}
+        name: ${{ steps.package.outputs.archive_name }}
+        path: ${{ steps.package.outputs.archive_name }}
