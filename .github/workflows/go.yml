@@ -7,10 +7,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-    version:
-      description: Version
-      default: v0.0.1
-      required: true
+      version:
+        description: Version
+        default: v0.0.1
+        required: true
 
 jobs:
   build:
@@ -23,6 +23,7 @@ jobs:
     steps:
       - name: echo
         run: echo "Version: ${{ github.event.inputs.version }}"
+
       - name: Vars Windows
         if: matrix.platform == 'windows-latest'
         id: vars-win
