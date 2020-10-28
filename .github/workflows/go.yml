@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: echo
-        run: echo "Version: ${{ github.event.inputs.version }}"
+        run: echo "Version"
 
       - name: Vars Windows
         if: matrix.platform == 'windows-latest'
