@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+    version:
+      description: Version
+      default: v0.0.1
+      required: true
 
 jobs:
   build:
