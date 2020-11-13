@@ -5,7 +5,7 @@ on:
     inputs:
 defaults:
   run:
-    shell: /bin/bash
+    shell: bash
 env:
   foo: value1
 
