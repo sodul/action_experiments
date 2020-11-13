@@ -16,13 +16,12 @@ jobs:
     env:
       bar: value2 
       # Looking up `${{ env. }}` from a `env:` section is not allowed.
-      # We can use the add-env-vars-action instead:
+      # We can use the $GITHUB_ENV special file instead to simulate this:
       # baz: ${{ env.foo }}/baz 
     steps:
       - name: Setup env
-        uses: sodul/add-env-vars-action@1.0
-        with:
-          map: '{"baz": "${{ env.foo }}/baz"}'  
+        run: |
+          echo "baz=${{ foo }}/baz" >> $GITHUB_ENV
       - name: print
         run: |
           echo foo: ${{ env.foo }}
