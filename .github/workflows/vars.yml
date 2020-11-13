@@ -1,0 +1,13 @@
+name: Vars
+
+on:
+  workflow_dispatch:
+    inputs:
+env:
+  foo: value1
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print
+        run: echo ${{ env.foo }}
