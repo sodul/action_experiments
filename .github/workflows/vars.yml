@@ -3,15 +3,22 @@ name: Vars
 on:
   workflow_dispatch:
     inputs:
+defaults:
+  run:
+    shell: /bin/bash
 env:
   foo: value1
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     env:
       bar: value2 
+      baz: ${{ env.foo }}baz
     steps:
       - name: print
         run: |
           echo foo: ${{ env.foo }}
           echo bar: ${{ env.bar }}
+          echo baz: ${{ env.baz }}
