@@ -15,8 +15,14 @@ jobs:
     
     env:
       bar: value2 
-      baz: ${{ env.foo }}baz
+      # Looking up `${{ env. }}` from a `env:` section is not allowed.
+      # We can use the add-env-vars-action instead:
+      # baz: ${{ env.foo }}/baz 
     steps:
+      - name: Setup env
+        uses: jwulf/add-env-vars-action@master
+        with:
+          map: '{"baz": "${{ env.foo }}/baz"}'  
       - name: print
         run: |
           echo foo: ${{ env.foo }}
