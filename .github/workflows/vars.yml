@@ -8,6 +8,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      bar: value2 
     steps:
       - name: print
-        run: echo ${{ env.foo }}
+        run: |
+          echo foo: ${{ env.foo }}
+          echo bar: ${{ env.bar }}
