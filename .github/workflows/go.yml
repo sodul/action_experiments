@@ -22,22 +22,25 @@ jobs:
 
       - name: Vars Windows
         if: matrix.platform == 'windows-latest'
-        id: vars-win
-        run: echo "::set-output name=archive_name::action_experiments-windows.zip"
+        # id: vars-win
+        # run: echo "::set-output name=archive_name::action_experiments-windows.zip"
+        run: echo "archive_name=action_experiments-windows.zip" >> $GITHUB_ENV
 
       - name: Vars Linux
         if: matrix.platform == 'ubuntu-latest'
-        id: vars-linux
-        run: echo "::set-output name=archive_name::action_experiments-linux.tgz"
+        # id: vars-linux
+        # run: echo "::set-output name=archive_name::action_experiments-linux.tgz"
+        run: echo "archive_name=action_experiments-linux.tgz" >> $GITHUB_ENV
 
       - name: Vars macOS
         if: matrix.platform == 'macos-latest'
-        id: vars-macos
-        run: echo "::set-output name=archive_name::action_experiments-macos.tgz"
+        # id: vars-macos
+        # run: echo "::set-output name=archive_name::action_experiments-macos.tgz"
+        run: echo "archive_name=action_experiments-macos.tgz" >> $GITHUB_ENV
 
-      - name: Vars
-        id: vars
-        run: echo "::set-output name=archive_name::${{ steps.vars-win.outputs.archive_name }}${{ steps.vars-linux.outputs.archive_name }}${{ steps.vars-macos.outputs.archive_name }}"
+      # - name: Vars
+      #   id: vars
+      #   run: echo "::set-output name=archive_name::${{ steps.vars-win.outputs.archive_name }}${{ steps.vars-linux.outputs.archive_name }}${{ steps.vars-macos.outputs.archive_name }}"
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -61,14 +64,14 @@ jobs:
 
       - name: Package tgz
         if: matrix.platform != 'windows-latest'
-        run: tar -czvf "${{ steps.vars.outputs.archive_name }}" action_experiments
+        run: tar -czvf "${{ env.archive_name }}" action_experiments
 
       - name: Package zip
         if: matrix.platform == 'windows-latest'
-        run: Compress-Archive -Path action_experiments.exe -DestinationPath "${{ steps.vars.outputs.archive_name }}"
+        run: Compress-Archive -Path action_experiments.exe -DestinationPath "${{ env.archive_name }}"
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ steps.vars.outputs.archive_name }}
-          path: ${{ steps.vars.outputs.archive_name }}
+          name: ${{ env.archive_name }}
+          path: ${{ env.archive_name }}
