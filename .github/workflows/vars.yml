@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Setup env
         run: |
-          echo "baz=${{ foo }}/baz" >> $GITHUB_ENV
+          echo "baz=${{ env.foo }}/baz" >> $GITHUB_ENV
       - name: print
         run: |
           echo foo: ${{ env.foo }}
