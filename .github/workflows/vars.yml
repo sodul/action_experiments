@@ -20,7 +20,7 @@ jobs:
       # baz: ${{ env.foo }}/baz 
     steps:
       - name: Setup env
-        uses: jwulf/add-env-vars-action@v1
+        uses: sodul/add-env-vars-action@v1.0
         with:
           map: '{"baz": "${{ env.foo }}/baz"}'  
       - name: print
