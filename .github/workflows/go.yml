@@ -8,6 +8,10 @@ on:
   workflow_dispatch:
     inputs:
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     strategy:
@@ -68,6 +72,7 @@ jobs:
 
       - name: Package zip
         if: matrix.platform == 'windows-latest'
+        shell: powershell
         run: Compress-Archive -Path action_experiments.exe -DestinationPath "${{ env.archive_name }}"
 
       - name: Publish artifact
