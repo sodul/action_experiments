@@ -30,6 +30,12 @@ jobs:
         # run: echo "::set-output name=archive_name::action_experiments-windows.zip"
         run: echo "archive_name=action_experiments-windows.zip" >> $GITHUB_ENV
 
+      - name: Details Windows
+        if: matrix.platform == 'windows-latest'
+        run: |
+          which bash
+          ls -la $(diname $( which bash ) )
+
       - name: Vars Linux
         if: matrix.platform == 'ubuntu-latest'
         # id: vars-linux
